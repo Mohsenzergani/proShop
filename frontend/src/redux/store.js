@@ -1,15 +1,58 @@
-import { createStore, applyMiddleware } from "redux";
+import { createStore, combineReducers, applyMiddleware } from "redux";
+import thunk from "redux-thunk";
 import { composeWithDevTools } from "redux-devtools-extension";
+import {
+  productListReducer,
+  productDetailsReducer,
+  productDeleteReducer,
+  productCreateReducer,
+  productUpdateReducer,
+  productReviewCreateReducer,
+  productTopRatedReducer,
+} from "./product/productReducers";
+import { cartReducer } from "./cart/cartReducers";
+import {
+  userLoginReducer,
+  userRegisterReducer,
+  userDetailsReducer,
+  userUpdateProfileReducer,
+  userListReducer,
+  userDeleteReducer,
+  userUpdateReducer,
+} from "./user/userReducers";
+import {
+  orderCreateReducer,
+  orderDetailsReducer,
+  orderPayReducer,
+  orderDeliverReducer,
+  orderListMyReducer,
+  orderListReducer,
+} from "./order/orderReducers";
 
-import { persistStore } from "redux-persist";
-import logger from "redux-logger";
-import createSagaMiddleware from "redux-saga";
-import rootReducer from "./rootReducer";
-const sagaMiddleware = createSagaMiddleware();
-const middleware = [sagaMiddleware];
-if (process.env.NODE_ENV === "development") {
-  middleware.push(logger);
-}
+const reducer = combineReducers({
+  productList: productListReducer,
+  productDetails: productDetailsReducer,
+  productDelete: productDeleteReducer,
+  productCreate: productCreateReducer,
+  productUpdate: productUpdateReducer,
+  productReviewCreate: productReviewCreateReducer,
+  productTopRated: productTopRatedReducer,
+  cart: cartReducer,
+  userLogin: userLoginReducer,
+  userRegister: userRegisterReducer,
+  userDetails: userDetailsReducer,
+  userUpdateProfile: userUpdateProfileReducer,
+  userList: userListReducer,
+  userDelete: userDeleteReducer,
+  userUpdate: userUpdateReducer,
+  orderCreate: orderCreateReducer,
+  orderDetails: orderDetailsReducer,
+  orderPay: orderPayReducer,
+  orderDeliver: orderDeliverReducer,
+  orderListMy: orderListMyReducer,
+  orderList: orderListReducer,
+});
+
 const cartItemsFromStorage = localStorage.getItem("cartItems")
   ? JSON.parse(localStorage.getItem("cartItems"))
   : [];
@@ -30,21 +73,12 @@ const initialState = {
   userLogin: { userInfo: userInfoFromStorage },
 };
 
-const enhancers = [applyMiddleware(...middleware)];
-const composeEnhancers =
-  process.env.NODE_ENV !== "production" &&
-  typeof window === "object" &&
-  window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
-    ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({})
-    : compose;
-// const store = createStore(
-//   reducer,
-//   initialState,
-//   composeWithDevTools(applyMiddleware(...middleware))
-// );
-export const store = createStore(rootReducer, initialState, composeEnhancers(...enhancers));
-// sagaMiddleware.run(rootSaga);
+const middleware = [thunk];
 
-export const persistor = persistStore(store);
-export default { store, persistStore };
+const store = createStore(
+  reducer,
+  initialState,
+  composeWithDevTools(applyMiddleware(...middleware))
+);
+
 export default store;

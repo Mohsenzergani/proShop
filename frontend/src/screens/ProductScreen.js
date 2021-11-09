@@ -9,8 +9,8 @@ import Meta from '../components/Meta'
 import {
   listProductDetails,
   createProductReview,
-} from '../actions/productActions'
-import { PRODUCT_CREATE_REVIEW_RESET } from '../constants/productConstants'
+} from '../redux/product/productActions'
+import { PRODUCT_CREATE_REVIEW_RESET } from '../redux/product/productConstants'
 
 const ProductScreen = ({ history, match }) => {
   const [qty, setQty] = useState(1)
